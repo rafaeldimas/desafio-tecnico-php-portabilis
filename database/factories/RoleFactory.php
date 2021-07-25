@@ -22,7 +22,20 @@ class RoleFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->name,
+            'active' => $this->faker->boolean,
         ];
+    }
+
+    /**
+     * @return RoleFactory
+     */
+    public function active(): RoleFactory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'active' => true,
+            ];
+        });
     }
 }
