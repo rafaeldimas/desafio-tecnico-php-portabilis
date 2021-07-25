@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
     private function seedersProduction(): array
     {
         return [
+            PermissionSeeder::class,
             RoleSeeder::class,
         ];
     }
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
     private function seedersDevelopment(): array
     {
         return [
+            PermissionSeeder::class,
             RoleSeeder::class,
         ];
     }
