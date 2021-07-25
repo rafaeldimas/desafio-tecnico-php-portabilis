@@ -56,7 +56,7 @@ class AuthServiceProvider extends ServiceProvider
                     ->role()
                     ->where('active', true)
                     ->whereHas('permissions', function (Builder $builder) use ($permission) {
-                        $builder->where('id', $permission->id);
+                        $builder->where('permissions.id', $permission->id);
                     })
                     ->exists();
             });
