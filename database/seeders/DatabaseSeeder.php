@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
         return [
             PermissionSeeder::class,
             RoleSeeder::class,
+            UserSeeder::class,
         ];
     }
 
@@ -39,6 +40,7 @@ class DatabaseSeeder extends Seeder
         return [
             PermissionSeeder::class,
             RoleSeeder::class,
+            UserSeeder::class,
         ];
     }
 }
