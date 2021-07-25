@@ -2,24 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Repositories\UserRepository;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 
 class DashboardController extends Controller
 {
+    public function __construct(
+        private UserRepository $userRepository
+    ) {}
+
     /**
+     * @param SearchUserRequest $searchUserRequest
      * @return Factory|View|Application
-     * @throws Exception
+     * @throws AuthorizationException
      */
-    public function users(): Factory|View|Application
+    public function users(SearchUserRequest $searchUserRequest): Factory|View|Application
     {
         $this->authorize('user_index');
 
-        $users = cache()->remember('dashboard-users', now()->addHour(), function () {
-            return User::with('role:id,name')->get();
+        $search = $searchUserRequest->validated();
+
+        $users = cache()->remember('dashboard-users', now()->addHour(), function () use ($search) {
+            return $this->userRepository->dashboardSearch($search);
         });
 
         return view('dashboard.users', compact('users'));
