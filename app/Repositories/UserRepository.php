@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 class UserRepository
@@ -21,6 +23,7 @@ class UserRepository
     {
         return $this->user
             ->newQuery()
+            ->where('active', true)
             ->when(Arr::get($search, 'name'), function (Builder $builder, $name) {
                 return $builder->where('name', 'like', "%{$name}%");
             })
@@ -45,5 +48,38 @@ class UserRepository
             })
             ->with('role:id,name')
             ->get();
+    }
+
+    /**
+     * @param array $data
+     * @return User|Model|Builder
+     */
+    public function create(array $data): User|Model|Builder
+    {
+        $role = Role::where('name', Arr::get($data, 'role'))->firstOrFail();
+        $password = bcrypt(Arr::get($data, 'password'));
+
+        return $this->user
+            ->newQuery()
+            ->create(array_merge(
+                Arr::only($data, [ 'name', 'email' ]),
+                [
+                    'role_id' => $role->id,
+                    'active' => true,
+                    'password' => $password,
+                ]
+            ));
+    }
+
+    /**
+     * @param User $user
+     * @param array $data
+     * @return User
+     */
+    public function update(User $user, array $data): User
+    {
+        $user->update($data);
+
+        return $user;
     }
 }

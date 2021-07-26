@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\UserController;
 use App\Models\User;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Route;
@@ -31,3 +32,7 @@ Route::post('token/create', function () {
 
     return [ 'token' => $token->plainTextToken ];
 });
+
+Route::apiResource('users', UserController::class)
+    ->middleware('auth:sanctum')
+    ->only([ 'store', 'update' ]);
