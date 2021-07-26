@@ -14,7 +14,7 @@ class AddColumnsRoleIdAndActiveInUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('active')->default(false)->after('password');
+            $table->boolean('active')->default(true)->after('password');
             $table->foreignId('role_id')->nullable()->after('active')->constrained()->nullOnDelete();
         });
     }

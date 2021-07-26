@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +15,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('token/create', function () {
+    $credentials = request()->validate([
+        'email' => 'required|email|exists:users',
+        'password' => 'required|string',
+    ], request()->all());
+
+    $user = User::where('email', $credentials['email'])->first();
+
+    if (!auth()->validate($credentials)) {
+        throw new AuthenticationException();
+    }
+
+    $token = $user->createToken('webhook-'.$user->id);
+
+    return [ 'token' => $token->plainTextToken ];
 });
